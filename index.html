@@ -141,11 +141,14 @@
         let uc = document.getElementById("usercomment");
         let postList = document.getElementById("posts");
 
+        let date = new Date();
+        let dateStr = `${date.getMonth() + 1}.${date.getMonth() + 1}.${date.getFullYear()}`;
+
         let newpost = CreateParentElement("li", "comment",
             [
                 CreateParentElement("div", "comment-header",
                     [CreateTextElement("div", "", un.value),
-                    CreateTextElement("div", "", "01.01.2020")]
+                    CreateTextElement("div", "", dateStr)]
                 ),
                 CreateParentElement("div", "comment-body",
                     [CreateTextElement("div", "comment-text", uc.value)]

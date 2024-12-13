@@ -61,6 +61,7 @@
     "use strict";
     // Код писать здесь
     console.log("It works!");
+    validation();
 
     function validation() {
         let un = document.getElementById("username");
@@ -70,26 +71,10 @@
             bt.disabled = false;
         else
             bt.disabled = true;
-
     }
 
-    function CreateParentElement(elementtype, sccclass, childs) {
-        let result = document.createElement(elementtype);
-        result.className = sccclass;
 
-        childs?.forEach(element => {
-            result.appendChild(element);
-        });
-        return result;
-    }
-
-    function CreateTextElement(elementtype, sccclass, text) {
-        let result = document.createElement(elementtype);
-        result.className = sccclass;
-        result.innerText = text;
-        return result;
-    }
-
+    //#region Первая версия
     function postmessage() {
         let un = document.getElementById("username");
         let uc = document.getElementById("usercomment");
@@ -135,6 +120,24 @@
         newpost.appendChild(div1);
         postList.appendChild(newpost);
     }
+    //#endregion    
+
+    function CreateParentElement(elementtype, sccclass, childs) {
+        let result = document.createElement(elementtype);
+        result.className = sccclass;
+
+        childs?.forEach(element => {
+            result.appendChild(element);
+        });
+        return result;
+    }
+
+    function CreateTextElement(elementtype, sccclass, text) {
+        let result = document.createElement(elementtype);
+        result.className = sccclass;
+        result.innerText = text;
+        return result;
+    }
 
     function postmessage2() {
         let un = document.getElementById("username");
@@ -142,7 +145,7 @@
         let postList = document.getElementById("posts");
 
         let date = new Date();
-        let dateStr = `${date.getMonth() + 1}.${date.getMonth() + 1}.${date.getFullYear()}`;
+        let dateStr = `${date.getMonth() + 1}.${date.getMonth() + 1}.${date.getFullYear()} ${date.getHours()}: ${date.getMinutes()}`;
 
         let newpost = CreateParentElement("li", "comment",
             [
@@ -161,6 +164,9 @@
                     )])
             ])
         postList.appendChild(newpost);
+        un.value = "";
+        uc.value = "";
+        validation();
     }
 
 

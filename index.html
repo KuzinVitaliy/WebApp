@@ -40,7 +40,7 @@
                 <div class="comment-footer">
                     <div class="likes">
                         <span class="likes-counter">75</span>
-                        <button class="like-button -active-like"></button>
+                        <button class="like-button"></button>
                     </div>
                 </div>
             </li>
@@ -58,6 +58,23 @@
 </body>
 
 <script>
+    const comments = [
+        {
+            userName: 'Глеб Фокин',
+            postDate: '12.02.22 12: 18',
+            comment: 'Это будет первый комментарий на этой странице',
+            likeCount: 3,
+            like: false
+        },
+        {
+            userName: 'Варвара Н.',
+            postDate: '13.02.22 19:22',
+            comment: 'Мне нравится как оформлена эта страница! ❤',
+            likeCount: 75,
+            like: true
+        }
+    ];
+
     "use strict";
     // Код писать здесь
     console.log("It works!");
@@ -73,55 +90,22 @@
             bt.disabled = true;
     }
 
-
-    //#region Первая версия
-    function postmessage() {
-        let un = document.getElementById("username");
-        let uc = document.getElementById("usercomment");
+    function RenderingDOM() {
         let postList = document.getElementById("posts");
+        postList.innerHTML = "";
 
-        let newpost = document.createElement("li");
-        newpost.className = "comment";
 
-        let div1 = document.createElement("div");
-        div1.className = "comment-header";
-        let txt = document.createElement("div");
-        txt.textContent = un.value;
-        div1.appendChild(txt);
-        txt = document.createElement("div");
-        txt.textContent = Date.now();
-        div1.appendChild(txt);
-
-        newpost.appendChild(div1);
-
-        div1 = document.createElement("div");
-        div1.className = "comment-body";
-
-        txt = document.createElement("div");
-        txt.className = "comment-text";
-        txt.innerText = uc.value;
-        div1.appendChild(txt);
-
-        newpost.appendChild(div1);
-        //
-        div1 = document.createElement("div");
-        div1.className = "comment-footer";
-        let div2 = document.createElement("div");
-        div1.appendChild(div2);
-        let div3 = document.createElement("span");
-        div3.className = "likes-counter";
-        div3.textContent = "0";
-        div2.appendChild(div3);
-
-        div3 = document.createElement("button");
-        div3.className = "like-button -active-like";
-        div2.appendChild(div3);
-
-        newpost.appendChild(div1);
-        postList.appendChild(newpost);
+        for (comment of comments) {
+            let comElement = CreateCommentElement(comment);
+            postList.appendChild(comElement);
+        }
     }
-    //#endregion    
+    RenderingDOM();
 
+
+
+
+    //Создать  элемент-контейнер в DOM
     function CreateParentElement(elementtype, sccclass, childs) {
         let result = document.createElement(elementtype);
         result.className = sccclass;
@@ -132,6 +116,7 @@
         return result;
     }
 
+    //Создать конечный элемент в DOM
     function CreateTextElement(elementtype, sccclass, text) {
         let result = document.createElement(elementtype);
         result.className = sccclass;
@@ -139,33 +124,58 @@
         return result;
     }
 
-    function postmessage2() {
-        let un = document.getElementById("username");
-        let uc = document.getElementById("usercomment");
-        let postList = document.getElementById("posts");
+    function CreateCommentElement(comment) {
 
-        let date = new Date();
-        let dateStr = `${date.getMonth() + 1}.${date.getMonth() + 1}.${date.getFullYear()} ${date.getHours()}: ${date.getMinutes()}`;
-
+        let lb = "like-button" + (comment.like == true ? " -active-like" : "");
+        let btn = CreateTextElement("button", lb, "");
+        btn.addEventListener("click", () => { ClickLike(comment); });
+        //        btn.addEventListener("click", () => { ClickLike(comment); });
+        //btn.addEventListener("onclick", () => { ClickLike(comment); });
         let newpost = CreateParentElement("li", "comment",
             [
                 CreateParentElement("div", "comment-header",
-                    [CreateTextElement("div", "", un.value),
-                    CreateTextElement("div", "", dateStr)]
+                    [CreateTextElement("div", "", comment.userName),
+                    CreateTextElement("div", "", comment.postDate)]
                 ),
                 CreateParentElement("div", "comment-body",
-                    [CreateTextElement("div", "comment-text", uc.value)]
+                    [CreateTextElement("div", "comment-text", comment.comment)]
                 ),
                 CreateParentElement("div", "comment-footer",
                     [CreateParentElement("div", "likes",
-                        [CreateTextElement("div", "likes-counter", "0"),
-                        CreateTextElement("button", "like-button", "")]
-
+                        [CreateTextElement("div", "likes-counter", comment.likeCount),
+                            btn]
                     )])
             ])
-        postList.appendChild(newpost);
-        un.value = "";
-        uc.value = "";
+        return newpost;
+    }
+
+    function ClickLike(comment) {
+        let r = 0;
+        if (comment.like) {
+            comment.like = false;
+            comment.likeCount--;
+        } else {
+            comment.like = true;
+            comment.likeCount++;
+        }
+        RenderingDOM();
+    }
+
+    function postmessage2() {
+        let un = document.getElementById("username");
+        let uc = document.getElementById("usercomment");
+        let date = new Date();
+        let dateStr = `${date.getMonth() + 1}.${date.getMonth() + 1}.${date.getFullYear()} ${date.getHours()}: ${date.getMinutes()}`;
+
+        let newCom = {
+            userName: un.value,
+            postDate: dateStr,
+            comment: uc.value,
+            likeCount: 0,
+            like: false
+        };
+        comments.push(newCom);
+        RenderingDOM();
         validation();
     }
 

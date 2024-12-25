@@ -145,8 +145,22 @@
                         [CreateTextElement("div", "likes-counter", comment.likeCount),
                             btn]
                     )])
-            ])
+            ]);
+        let y = newpost.children[1];
+        newpost.children[1].children[0].addEventListener("click", () => { CommentClick(comment); });
         return newpost;
+    }
+
+    let editComment;
+
+    function CommentClick(comment) {
+        let un = document.getElementById("username");
+        let uc = document.getElementById("usercomment");
+
+        un.value = comment.userName;
+        un.ariaReadOnly = true;
+        uc.value = comment.comment + " > ";
+        editComment = comment;
     }
 
     function ClickLike(comment) {
@@ -166,15 +180,20 @@
         let uc = document.getElementById("usercomment");
         let date = new Date();
         let dateStr = `${date.getMonth() + 1}.${date.getMonth() + 1}.${date.getFullYear()} ${date.getHours()}: ${date.getMinutes()}`;
+        if (editComment == null) {
+            let newCom = {
+                userName: un.value,
+                postDate: dateStr,
+                comment: uc.value,
+                likeCount: 0,
+                like: false
+            };
+            comments.push(newCom);
+        }
+        else {
+            editComment.comment = uc.value;
+        }
 
-        let newCom = {
-            userName: un.value,
-            postDate: dateStr,
-            comment: uc.value,
-            likeCount: 0,
-            like: false
-        };
-        comments.push(newCom);
         RenderingDOM();
         un.value = "";
         uc.value = "";

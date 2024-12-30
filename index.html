@@ -64,7 +64,16 @@
             postDate: '12.02.22 12: 18',
             comment: 'Это будет первый комментарий на этой странице',
             likeCount: 3,
-            like: false
+            like: false,
+            answers: [
+                {
+                    userName: 'Глеб Фокин',
+                    postDate: '12.02.22 12: 18',
+                    comment: 'Это будет первый комментарий на этой странице',
+                    likeCount: 3,
+                    like: false
+                }
+            ]
         },
         {
             userName: 'Варвара Н.',
@@ -94,15 +103,23 @@
         let postList = document.getElementById("posts");
         postList.innerHTML = "";
 
-
+        createCommentsDOM(comments, postList);
+        /*
         for (comment of comments) {
             let comElement = CreateCommentElement(comment);
             postList.appendChild(comElement);
         }
+            */
     }
     RenderingDOM();
 
-
+    function createCommentsDOM(arrComments, rootElement) {
+        if (arrComments == null) return;
+        for (comment of arrComments) {
+            let comElement = CreateCommentElement(comment);
+            rootElement.appendChild(comElement);
+        }
+    }
 
 
     //Создать  элемент-контейнер в DOM
@@ -111,7 +128,8 @@
         result.className = sccclass;
 
         childs?.forEach(element => {
-            result.appendChild(element);
+            if (element != null)
+                result.appendChild(element);
         });
         return result;
     }
@@ -130,7 +148,12 @@
         let btn = CreateTextElement("button", lb, "");
         btn.addEventListener("click", () => { ClickLike(comment); });
         //        btn.addEventListener("click", () => { ClickLike(comment); });
-        //btn.addEventListener("onclick", () => { ClickLike(comment); });
+        //btn.addEventListener("onclick", () => { ClickLike(comment); });'let answ'
+        let answ = null;
+        if (comment.answers != null) {
+            answ = CreateParentElement("div", "comments", null);
+            createCommentsDOM(comment.answers, answ);
+        }
         let newpost = CreateParentElement("li", "comment",
             [
                 CreateParentElement("div", "comment-header",
@@ -144,7 +167,8 @@
                     [CreateParentElement("div", "likes",
                         [CreateTextElement("div", "likes-counter", comment.likeCount),
                             btn]
-                    )])
+                    )]),
+                answ
             ]);
         let y = newpost.children[1];
         newpost.children[1].children[0].addEventListener("click", () => { CommentClick(comment); });
@@ -180,20 +204,25 @@
         let uc = document.getElementById("usercomment");
         let date = new Date();
         let dateStr = `${date.getMonth() + 1}.${date.getMonth() + 1}.${date.getFullYear()} ${date.getHours()}: ${date.getMinutes()}`;
+        let newCom = {
+            userName: un.value,
+            postDate: dateStr,
+            comment: uc.value,
+            likeCount: 0,
+            like: false
+        };
         if (editComment == null) {
-            let newCom = {
-                userName: un.value,
-                postDate: dateStr,
-                comment: uc.value,
-                likeCount: 0,
-                like: false
-            };
+
             comments.push(newCom);
         }
         else {
-            editComment.comment = uc.value;
+            if (editComment.answers == null)
+                editComment.answers = [];
+            editComment.answers.push(newCom);
         }
 
+
+        editComment = null;
         RenderingDOM();
         un.value = "";
         uc.value = "";

@@ -51,7 +51,7 @@
             <textarea type="textarea" id="usercomment" class="add-form-text" placeholder="Введите ваш коментарий"
                 rows="4" onchange=validation()></textarea>
             <div class="add-form-row">
-                <button class="add-form-button" id="postbutton" onclick=postmessage2()>Написать</button>
+                <button class="add-form-button" id="postbutton" onclick=postmessageHTML()>Написать</button>
             </div>
         </div>
     </div>
@@ -65,12 +65,13 @@
             comment: 'Это будет первый комментарий на этой странице',
             likeCount: 3,
             like: false,
+            level: 0,
             answers: [
                 {
                     userName: 'Глеб Фокин',
                     postDate: '12.02.22 12: 18',
                     comment: 'Это будет первый комментарий на этой странице',
-                    likeCount: 3,
+                    likeCount: 5,
                     like: false
                 }
             ]
@@ -80,7 +81,8 @@
             postDate: '13.02.22 19:22',
             comment: 'Мне нравится как оформлена эта страница! ❤',
             likeCount: 75,
-            like: true
+            like: true,
+            level: 0
         }
     ];
 
@@ -98,29 +100,6 @@
         else
             bt.disabled = true;
     }
-
-    function RenderingDOM() {
-        let postList = document.getElementById("posts");
-        postList.innerHTML = "";
-
-        createCommentsDOM(comments, postList);
-        /*
-        for (comment of comments) {
-            let comElement = CreateCommentElement(comment);
-            postList.appendChild(comElement);
-        }
-            */
-    }
-    RenderingDOM();
-
-    function createCommentsDOM(arrComments, rootElement) {
-        if (arrComments == null) return;
-        for (comment of arrComments) {
-            let comElement = CreateCommentElement(comment);
-            rootElement.appendChild(comElement);
-        }
-    }
-
 
     //Создать  элемент-контейнер в DOM
     function CreateParentElement(elementtype, sccclass, childs) {
@@ -141,12 +120,27 @@
         result.innerText = text;
         return result;
     }
+    //#region  DOM version
+    // RenderingDOM();
 
-    function CreateCommentElement(comment) {
+    function RenderingDOM() {
+        let postList = document.getElementById("posts");
+        postList.innerHTML = "";
+        createCommentsDOM(comments, postList);
+    }
+
+    function createCommentsDOM(arrComments, rootElement) {
+        if (arrComments == null) return;
+        for (comment of arrComments) {
+            let comElement = CreateCommentElementDOM(comment);
+            rootElement.appendChild(comElement);
+        }
+    }
+    function CreateCommentElementDOM(comment) {
 
         let lb = "like-button" + (comment.like == true ? " -active-like" : "");
         let btn = CreateTextElement("button", lb, "");
-        btn.addEventListener("click", () => { ClickLike(comment); });
+        btn.addEventListener("click", () => { ClickLikeDOM(comment); });
         //        btn.addEventListener("click", () => { ClickLike(comment); });
         //btn.addEventListener("onclick", () => { ClickLike(comment); });'let answ'
         let answ = null;
@@ -174,7 +168,7 @@
         newpost.children[1].children[0].addEventListener("click", () => { CommentClick(comment); });
         return newpost;
     }
-
+    ////#endregion
     let editComment;
 
     function CommentClick(comment) {
@@ -187,7 +181,7 @@
         editComment = comment;
     }
 
-    function ClickLike(comment) {
+    function ClickLikeDOM(comment) {
         let r = 0;
         if (comment.like) {
             comment.like = false;
@@ -198,6 +192,8 @@
         }
         RenderingDOM();
     }
+
+
 
     function postmessage2() {
         let un = document.getElementById("username");
@@ -223,12 +219,128 @@
 
 
         editComment = null;
-        RenderingDOM();
+        RenderingHTML();
+        un.value = "";
+        uc.value = "";
+        validation();
+    }
+    //#region HTML version
+    RenderingHTML();
+
+    function RenderingHTML() {
+        let postList = document.getElementById("posts");
+        postList.innerHTML = "";
+
+        CreateCommentsHTML(comments, postList);
+        const likeBtns = document.getElementsByClassName("like-button");
+        initLikeClick();
+
+        initAnswerClick();
+    }
+
+    function CreateCommentsHTML(arrComments, rootElement) {
+        if (arrComments == null) return;
+        let commentsElementHTML = "";
+        rootElement.innerHTML = arrComments.map((comment, index) => { return CreateCommentElementHTML(comment, index) }).join("");
+
+    }
+    //Добавить обработчик события кнопки like
+    function initLikeClick() {
+        const btns = document.querySelectorAll(".like-button");
+        btns.forEach((btn, index) => { btn.addEventListener("click", () => ClickLikeHTML(index)) });
+    }
+
+    //Добавить обработчик события кнопки like
+    function initAnswerClick() {
+        const btns = document.querySelectorAll(".comment-body");
+        btns.forEach((btn, index) => { btn.addEventListener("click", () => CommentClickHTML(index)) });
+    }
+
+
+    //Создать один элемент комментарий 
+    function CreateCommentElementHTML(comment, index) {
+        let res = "";
+        let date = new Date();
+        let dateStr = `${date.getMonth() + 1}.${date.getMonth() + 1}.${date.getFullYear()} ${date.getHours()}: ${date.getMinutes()}`;
+        let lb = "like-button" + (comment.like == true ? " -active-like" : "");
+        res = `<li class="comment" style="margin-left:${comment.level * 50}px">
+            <div class="comment-header">
+                <div>${comment.userName}</div>
+                <div>${dateStr}</div>
+            </div>
+            <div class="comment-body">
+                <div class="comment-text">
+                    ${comment.comment}
+                </div>
+            </div>
+            <div class="comment-footer">
+                <div class="likes">
+                    <span class="likes-counter">${comment.likeCount}</span>
+                    <button data-index="${index}" class="${lb}" ></button>
+                </div>
+            </div>
+        </li>`;
+        return res;
+    }
+
+
+
+    function CommentClickHTML(id) {
+        let un = document.getElementById("username");
+        let uc = document.getElementById("usercomment");
+        const comment = comments[id];
+        un.value = comment.userName;
+        un.ariaReadOnly = true;
+        uc.value = comment.comment + " > ";
+        editComment = comment;
+        selectedComment = id;
+    }
+
+    function ClickLikeHTML(id) {
+
+        const comment = comments[id];
+        if (comment.like) {
+            comment.like = false;
+            comment.likeCount--;
+        } else {
+            comment.like = true;
+            comment.likeCount++;
+        }
+        RenderingHTML();
+    }
+
+    let selectedComment = -1;
+
+    function postmessageHTML() {
+        let un = document.getElementById("username");
+        let uc = document.getElementById("usercomment");
+        let date = new Date();
+        let dateStr = `${date.getMonth() + 1}.${date.getMonth() + 1}.${date.getFullYear()} ${date.getHours()}: ${date.getMinutes()}`;
+        let newCom = {
+            userName: un.value,
+            postDate: dateStr,
+            comment: uc.value,
+            likeCount: 0,
+            like: false,
+            level: 0
+        };
+
+        if (selectedComment >= 0) {
+            const comment = comments[selectedComment];
+            newCom.level = comment.level + 1;
+            comments.splice(selectedComment + 1, 0, newCom);
+        }
+        else {
+            comments.push(newCom);
+        }
+        selectedComment = -1;
+        RenderingHTML();
         un.value = "";
         uc.value = "";
         validation();
     }
 
+    //#endregion
 
 </script>
 

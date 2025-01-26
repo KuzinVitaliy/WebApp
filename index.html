@@ -7,169 +7,23 @@
     <link rel="stylesheet" href="styles.css" />
 </head>
 
+<script type="module" src="./scripts/data.js"></script>
+<script type="module" src="./scripts/main.js"></script>
+
 <body>
     <div class="container">
-        <ul class="comments" id="posts">
-            <li class="comment">
-                <div class="comment-header">
-                    <div>Глеб Фокин</div>
-                    <div>12.02.22 12:18</div>
-                </div>
-                <div class="comment-body">
-                    <div class="comment-text">
-                        Это будет первый комментарий на этой странице
-                    </div>
-                </div>
-                <div class="comment-footer">
-                    <div class="likes">
-                        <span class="likes-counter">3</span>
-                        <button class="like-button"></button>
-                    </div>
-                </div>
-            </li>
-            <li class="comment">
-                <div class="comment-header">
-                    <div>Варвара Н.</div>
-                    <div>13.02.22 19:22</div>
-                </div>
-                <div class="comment-body">
-                    <div class="comment-text">
-                        Мне нравится как оформлена эта страница! ❤
-                    </div>
-                </div>
-                <div class="comment-footer">
-                    <div class="likes">
-                        <span class="likes-counter">75</span>
-                        <button class="like-button -active-like"></button>
-                    </div>
-                </div>
-            </li>
+        <ul class="comments" id="posts">  
+
         </ul>
         <div class="add-form">
-            <input type="text" id="username" class="add-form-name" placeholder="Введите ваше имя"
-                onchange=validation() />
-            <textarea type="textarea" id="usercomment" class="add-form-text" placeholder="Введите ваш коментарий"
-                rows="4" onchange=validation()></textarea>
+            <input type="text" id="username" class="add-form-name" placeholder="Введите ваше имя" />
+            <textarea type="textarea" id="usercomment" class="add-form-text" placeholder="Введите ваш комментарий"
+                rows="4"></textarea>
             <div class="add-form-row">
-                <button class="add-form-button" id="postbutton" onclick=postmessage2()>Написать</button>
+                <button class="add-form-button" id="postbutton">Написать</button>
             </div>
         </div>
     </div>
 </body>
-
-<script>
-    "use strict";
-    // Код писать здесь
-    console.log("It works!");
-    validation();
-
-    function validation() {
-        let un = document.getElementById("username");
-        let uc = document.getElementById("usercomment");
-        let bt = document.getElementById("postbutton");
-        if (un.value.length > 0 && uc.value.length > 0)
-            bt.disabled = false;
-        else
-            bt.disabled = true;
-    }
-
-
-    //#region Первая версия
-    function postmessage() {
-        let un = document.getElementById("username");
-        let uc = document.getElementById("usercomment");
-        let postList = document.getElementById("posts");
-
-        let newpost = document.createElement("li");
-        newpost.className = "comment";
-
-        let div1 = document.createElement("div");
-        div1.className = "comment-header";
-        let txt = document.createElement("div");
-        txt.textContent = un.value;
-        div1.appendChild(txt);
-        txt = document.createElement("div");
-        txt.textContent = Date.now();
-        div1.appendChild(txt);
-
-        newpost.appendChild(div1);
-
-        div1 = document.createElement("div");
-        div1.className = "comment-body";
-
-        txt = document.createElement("div");
-        txt.className = "comment-text";
-        txt.innerText = uc.value;
-        div1.appendChild(txt);
-
-        newpost.appendChild(div1);
-        //
-        div1 = document.createElement("div");
-        div1.className = "comment-footer";
-        let div2 = document.createElement("div");
-        div1.appendChild(div2);
-        let div3 = document.createElement("span");
-        div3.className = "likes-counter";
-        div3.textContent = "0";
-        div2.appendChild(div3);
-
-        div3 = document.createElement("button");
-        div3.className = "like-button -active-like";
-        div2.appendChild(div3);
-
-        newpost.appendChild(div1);
-        postList.appendChild(newpost);
-    }
-    //#endregion    
-
-    function CreateParentElement(elementtype, sccclass, childs) {
-        let result = document.createElement(elementtype);
-        result.className = sccclass;
-
-        childs?.forEach(element => {
-            result.appendChild(element);
-        });
-        return result;
-    }
-
-    function CreateTextElement(elementtype, sccclass, text) {
-        let result = document.createElement(elementtype);
-        result.className = sccclass;
-        result.innerText = text;
-        return result;
-    }
-
-    function postmessage2() {
-        let un = document.getElementById("username");
-        let uc = document.getElementById("usercomment");
-        let postList = document.getElementById("posts");
-
-        let date = new Date();
-        let dateStr = `${date.getMonth() + 1}.${date.getMonth() + 1}.${date.getFullYear()} ${date.getHours()}: ${date.getMinutes()}`;
-
-        let newpost = CreateParentElement("li", "comment",
-            [
-                CreateParentElement("div", "comment-header",
-                    [CreateTextElement("div", "", un.value),
-                    CreateTextElement("div", "", dateStr)]
-                ),
-                CreateParentElement("div", "comment-body",
-                    [CreateTextElement("div", "comment-text", uc.value)]
-                ),
-                CreateParentElement("div", "comment-footer",
-                    [CreateParentElement("div", "likes",
-                        [CreateTextElement("div", "likes-counter", "0"),
-                        CreateTextElement("button", "like-button", "")]
-
-                    )])
-            ])
-        postList.appendChild(newpost);
-        un.value = "";
-        uc.value = "";
-        validation();
-    }
-
-
-</script>
 
 </html>

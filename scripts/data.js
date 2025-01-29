@@ -1,35 +1,47 @@
-const comments = [
-    {
-        userName: 'Глеб Фокин',
-        postDate: '12.02.22 12: 18',
-        comment: 'Это будет первый комментарий на этой странице',
-        likeCount: 3,
-        like: false,
-        level: 0,
-        answers: [
-            {
-                userName: 'Глеб Фокин',
-                postDate: '12.02.22 12: 18',
-                comment: 'Это будет первый комментарий на этой странице',
-                likeCount: 5,
-                like: false
-            }
-        ]
-    },
-    {
-        userName: 'Варвара Н.',
-        postDate: '13.02.22 19:22',
-        comment: 'Мне нравится как оформлена эта страница! ❤',
-        likeCount: 75,
-        like: true,
-        level: 0
-    }
-];
+var rootUrl = `https://wedev-api.sky.pro/api/v1/vk/comments`
 
-function clearText(text) {
-    let elm = document.createElement("div");
-    elm.innerHTML = text;
-    return elm.innerText;
+import { RenderingHTML } from './RenderHTML.js'
+
+let comments = []
+
+function readData(response) {
+    const jsonPromise = response.json()
+
+    // Подписываемся на результат преобразования
+    jsonPromise.then((responseData) => {
+        comments = responseData.comments
+        RenderingHTML()
+    })
 }
 
-export { comments, clearText };
+function saveComment(userName, comment) {
+    let newCom = { name: userName, text: comment }
+    fetch(rootUrl, { method: 'POST', body: JSON.stringify(newCom) })
+        .then((response) => {
+            if (response.ok) {
+                loadData()
+            } else {
+                let body = response.body
+            }
+        })
+        .catch((response) => {
+            response
+        })
+}
+
+function clearText(text) {
+    let elm = document.createElement('div')
+    elm.innerHTML = text
+    return elm.innerText
+}
+
+function init() {
+    rootUrl = `https://wedev-api.sky.pro/api/v1/vk/comments`
+}
+
+function loadData() {
+    const url = rootUrl
+    fetch(url).then((response) => readData(response))
+}
+
+export { comments, clearText, loadData, rootUrl, init, saveComment }

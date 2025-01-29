@@ -1,5 +1,6 @@
-import { comments, clearText } from './data.js'
+import { comments, clearText, saveComment } from './data.js'
 import { RenderingHTML } from './RenderHTML.js'
+import { validation } from './main.js'
 
 let selectedComment = -1
 
@@ -31,25 +32,7 @@ function ClickLikeHTML(id) {
 function postmessageHTML() {
     let un = document.getElementById('username')
     let uc = document.getElementById('usercomment')
-    let date = new Date()
-    let dateStr = `${date.getMonth() + 1}.${date.getMonth() + 1}.${date.getFullYear()} ${date.getHours()}: ${date.getMinutes()}`
-    let newCom = {
-        userName: clearText(un.value),
-        postDate: dateStr,
-        comment: clearText(uc.value),
-        likeCount: 0,
-        like: false,
-        level: 0,
-    }
-
-    if (selectedComment >= 0) {
-        const comment = comments[selectedComment]
-        newCom.level = comment.level + 1
-        comments.splice(selectedComment + 1, 0, newCom)
-    } else {
-        comments.push(newCom)
-    }
-    selectedComment = -1
+    saveComment(un.value, uc.value)
     RenderingHTML()
     un.value = ''
     uc.value = ''
@@ -75,27 +58,7 @@ function initAnswerClick() {
 function postmessage2() {
     let un = document.getElementById('username')
     let uc = document.getElementById('usercomment')
-    let date = new Date()
-    let dateStr = `${date.getMonth() + 1}.${date.getMonth() + 1}.${date.getFullYear()} ${date.getHours()}: ${date.getMinutes()}`
-    let newCom = {
-        userName: un.value,
-        postDate: dateStr,
-        comment: uc.value,
-        likeCount: 0,
-        like: false,
-    }
-    if (editComment == null) {
-        comments.push(newCom)
-    } else {
-        if (editComment.answers == null) editComment.answers = []
-        editComment.answers.push(newCom)
-    }
-
-    editComment = null
-    RenderingHTML()
-    un.value = ''
-    uc.value = ''
-    validation()
+    saveComment(un.value, uc.value)
 }
 
 export { initLikeClick, initAnswerClick, postmessageHTML }

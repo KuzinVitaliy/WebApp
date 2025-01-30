@@ -19,12 +19,12 @@ function CommentClickHTML(id) {
 
 function ClickLikeHTML(id) {
     const comment = comments[id]
-    if (comment.like) {
-        comment.like = false
-        comment.likeCount--
+    if (comment.isLiked) {
+        comment.isLiked = false
+        comment.likes--
     } else {
-        comment.like = true
-        comment.likeCount++
+        comment.isLiked = true
+        comment.likes++
     }
     RenderingHTML()
 }

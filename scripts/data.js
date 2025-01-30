@@ -35,13 +35,9 @@ function clearText(text) {
     return elm.innerText
 }
 
-function init() {
-    rootUrl = `https://wedev-api.sky.pro/api/v1/vk/comments`
-}
-
 function loadData() {
     const url = rootUrl
     fetch(url).then((response) => readData(response))
 }
 
-export { comments, clearText, loadData, rootUrl, init, saveComment }
+export { comments, clearText, loadData, rootUrl, saveComment }

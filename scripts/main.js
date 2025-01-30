@@ -1,7 +1,7 @@
 //import { RenderingHTML } from './RenderHTML.js'
 //import { RenderingDOM } from './RenderDOM.js'
 import { postmessageHTML } from './ListenerHTML.js'
-import { loadData, init } from './data.js'
+import { loadData } from './data.js'
 
 function validation() {
     let un = document.getElementById('username')
@@ -25,7 +25,6 @@ function eventValidationLink() {
 export { validation }
 
 eventValidationLink()
-init()
 loadData()
 //RenderingHTML()
 //RenderingDOM();

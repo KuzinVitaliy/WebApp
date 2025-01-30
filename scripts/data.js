@@ -14,6 +14,15 @@ function readData(response) {
     })
 }
 
+function showError(response) {
+    const jsonError = response.json()
+
+    // Подписываемся на результат преобразования
+    jsonError.then((error) => {
+        alert(`Ошибка сохранения данных ${error.error}`)
+    })
+}
+
 function saveComment(userName, comment) {
     let newCom = { name: userName, text: comment }
     fetch(rootUrl, { method: 'POST', body: JSON.stringify(newCom) })
@@ -21,7 +30,8 @@ function saveComment(userName, comment) {
             if (response.ok) {
                 loadData()
             } else {
-                let body = response.body
+                console.log(`Ошибка сохранения данных: ${response.status}`)
+                showError(response)
             }
         })
         .catch((response) => {

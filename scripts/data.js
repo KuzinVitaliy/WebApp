@@ -2,13 +2,14 @@ var rootUrl = `https://wedev-api.sky.pro/api/v1/vk/comments`
 
 import { RenderingHTML } from './RenderHTML.js'
 
+let loadDataDiv = document.getElementById('loaddata')
+let addComDiv = document.getElementById('addCommnet')
+let commentEditDiv = document.getElementById('commentEdit')
+
 let comments = []
 
 function readData(response) {
-    const jsonPromise = response.json()
-
-    // Подписываемся на результат преобразования
-    jsonPromise.then((responseData) => {
+    return response.json().then((responseData) => {
         comments = responseData.comments
         RenderingHTML()
     })
@@ -28,7 +29,7 @@ function saveComment(userName, comment) {
     fetch(rootUrl, { method: 'POST', body: JSON.stringify(newCom) })
         .then((response) => {
             if (response.ok) {
-                loadData()
+                addComentData()
             } else {
                 console.log(`Ошибка сохранения данных: ${response.status}`)
                 showError(response)
@@ -47,7 +48,35 @@ function clearText(text) {
 
 function loadData() {
     const url = rootUrl
-    fetch(url).then((response) => readData(response))
+    loadDataDiv.style.display = 'block'
+    fetch(url)
+        .then((response) => {
+            return readData(response)
+        })
+        .then(() => {
+            console.log('Загрузка завершена')
+        })
+        .finally(() => {
+            loadDataDiv.style.display = 'none'
+        })
+}
+
+function addComentData() {
+    const url = rootUrl
+    addComDiv.style.display = 'block'
+    commentEditDiv.style.display = 'none'
+    fetch(url)
+        .then((response) => {
+            return readData(response)
+        })
+        .then(() => {
+            console.log('Загрузка завершена')
+            addComDiv.style.display = 'none'
+        })
+        .finally(() => {
+            addComDiv.style.display = 'none'
+            commentEditDiv.style.display = 'block'
+        })
 }
 
 export { comments, clearText, loadData, rootUrl, saveComment }

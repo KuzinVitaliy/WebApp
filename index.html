@@ -10,8 +10,14 @@
 
   <body>
     <div class="container">
+      <div id="loaddata" style="display: block">
+        <div>Идет загрузка данных</div>
+      </div>
       <ul class="comments" id="posts"></ul>
-      <div class="add-form">
+      <div id="addCommnet" style="display: none">
+        <div>Идет добавление комментария</div>
+      </div>
+      <div class="add-form" id="commentEdit">
         <input
           type="text"
           id="username"

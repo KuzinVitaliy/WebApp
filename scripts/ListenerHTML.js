@@ -1,4 +1,4 @@
-import { comments, clearText, saveComment } from './data.js'
+import { comments,  saveComment } from './data.js'
 import { RenderingHTML } from './RenderHTML.js'
 import { validation } from './main.js'
 

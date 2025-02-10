@@ -1,10 +1,8 @@
+//Корневой адрес службы
 var rootUrl = `https://wedev-api.sky.pro/api/v1/vk/comments`
 
 import { RenderingHTML } from './RenderHTML.js'
-
-let loadDataDiv = document.getElementById('loaddata')
-let addComDiv = document.getElementById('addCommnet')
-let commentEditDiv = document.getElementById('commentEdit')
+import { elLoadData, elAddComment, elCommentEdit } from './elements.js'
 
 let comments = []
 
@@ -26,17 +24,17 @@ function showError(response) {
 
 function saveComment(userName, comment) {
     let newCom = { name: userName, text: comment }
-    fetch(rootUrl, { method: 'POST', body: JSON.stringify(newCom) })
+    return fetch(rootUrl, { method: 'POST', body: JSON.stringify(newCom) })
         .then((response) => {
             if (response.ok) {
-                addComentData()
+                addCommentData()
             } else {
                 console.log(`Ошибка сохранения данных: ${response.status}`)
                 showError(response)
             }
         })
-        .catch((response) => {
-            response
+        .catch((error) => {
+            console.log(error.message)
         })
 }
 
@@ -48,7 +46,7 @@ function clearText(text) {
 
 function loadData() {
     const url = rootUrl
-    loadDataDiv.style.display = 'block'
+    elLoadData.style.display = 'block'
     fetch(url)
         .then((response) => {
             return readData(response)
@@ -56,26 +54,29 @@ function loadData() {
         .then(() => {
             console.log('Загрузка завершена')
         })
+        .catch((error) => {
+            console.log(error.message)
+        })
         .finally(() => {
-            loadDataDiv.style.display = 'none'
+            elLoadData.style.display = 'none'
         })
 }
 
-function addComentData() {
+function addCommentData() {
     const url = rootUrl
-    addComDiv.style.display = 'block'
-    commentEditDiv.style.display = 'none'
+    elAddComment.style.display = 'block'
+    elCommentEdit.style.display = 'none'
     fetch(url)
         .then((response) => {
             return readData(response)
         })
         .then(() => {
             console.log('Загрузка завершена')
-            addComDiv.style.display = 'none'
+            elAddComment.style.display = 'none'
         })
         .finally(() => {
-            addComDiv.style.display = 'none'
-            commentEditDiv.style.display = 'block'
+            elAddComment.style.display = 'none'
+            elCommentEdit.style.display = 'block'
         })
 }
 

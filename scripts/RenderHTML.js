@@ -1,6 +1,7 @@
 import { comments } from './data.js'
 import { initLikeClick } from './ListenerHTML.js'
 import { initAnswerClick } from './ListenerHTML.js'
+import {elPostList} from './elements.js'
 
 function CreateCommentsHTML(arrComments, rootElement) {
     if (arrComments == null) return
@@ -39,9 +40,8 @@ function CreateCommentElementHTML(comment) {
 }
 
 function RenderingHTML() {
-    let postList = document.getElementById('posts')
-    postList.innerHTML = ''
-    CreateCommentsHTML(comments, postList)
+    elPostList.innerHTML = ''
+    CreateCommentsHTML(comments, elPostList)
     initLikeClick()
     initAnswerClick()
 }

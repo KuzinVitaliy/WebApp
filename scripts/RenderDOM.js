@@ -1,72 +1,73 @@
-import { comments } from "./data.js";
+import { comments } from './data.js'
+import { elPostList } from './elements.js'
+import { CommentClick, ClickLikeDOM } from './ListenerDom.js'
 
 //Создать  элемент-контейнер в DOM
-function CreateParentElement(elementtype, sccclass, childs) {
-    let result = document.createElement(elementtype);
-    result.className = sccclass;
+function CreateParentElement(elementType, cssClass, children) {
+    let result = document.createElement(elementType)
+    result.className = cssClass
 
-    childs?.forEach(element => {
-        if (element != null)
-            result.appendChild(element);
-    });
-    return result;
+    children?.forEach((element) => {
+        if (element != null) result.appendChild(element)
+    })
+    return result
 }
 
 //Создать конечный элемент в DOM
-function CreateTextElement(elementtype, sccclass, text) {
-    let result = document.createElement(elementtype);
-    result.className = sccclass;
-    result.innerText = text;
-    return result;
+function CreateTextElement(elementType, cssClass, text) {
+    let result = document.createElement(elementType)
+    result.className = cssClass
+    result.innerText = text
+    return result
 }
 
 //Создать элементы по массиву
 function createCommentsDOM(arrComments, rootElement) {
-    if (arrComments == null) return;
-    for (comment of arrComments) {
-        let comElement = CreateCommentElementDOM(comment);
-        rootElement.appendChild(comElement);
+    if (arrComments == null) return
+    for (let comment of arrComments) {
+        let comElement = CreateCommentElementDOM(comment)
+        rootElement.appendChild(comElement)
     }
 }
-//Создать элемент с комментариями 
+//Создать элемент с комментариями
 function CreateCommentElementDOM(comment) {
+    let lb = 'like-button' + (comment.like == true ? ' -active-like' : '')
+    let btn = CreateTextElement('button', lb, '')
+    btn.addEventListener('click', () => {
+        ClickLikeDOM(comment)
+    })
 
-    let lb = "like-button" + (comment.like == true ? " -active-like" : "");
-    let btn = CreateTextElement("button", lb, "");
-    btn.addEventListener("click", () => { ClickLikeDOM(comment); });
-    //        btn.addEventListener("click", () => { ClickLike(comment); });
-    //btn.addEventListener("onclick", () => { ClickLike(comment); });'let answ'
-    let answ = null;
+    let answer = null
     if (comment.answers != null) {
-        answ = CreateParentElement("div", "comments", null);
-        createCommentsDOM(comment.answers, answ);
+        answer = CreateParentElement('div', 'comments', null)
+        createCommentsDOM(comment.answers, answer)
     }
-    let newpost = CreateParentElement("li", "comment",
-        [
-            CreateParentElement("div", "comment-header",
-                [CreateTextElement("div", "", comment.userName),
-                CreateTextElement("div", "", comment.postDate)]
-            ),
-            CreateParentElement("div", "comment-body",
-                [CreateTextElement("div", "comment-text", comment.comment)]
-            ),
-            CreateParentElement("div", "comment-footer",
-                [CreateParentElement("div", "likes",
-                    [CreateTextElement("div", "likes-counter", comment.likeCount),
-                        btn]
-                )]),
-            answ
-        ]);
-    let y = newpost.children[1];
-    newpost.children[1].children[0].addEventListener("click", () => { CommentClick(comment); });
-    return newpost;
+    let newPost = CreateParentElement('li', 'comment', [
+        CreateParentElement('div', 'comment-header', [
+            CreateTextElement('div', '', comment.userName),
+            CreateTextElement('div', '', comment.postDate),
+        ]),
+        CreateParentElement('div', 'comment-body', [
+            CreateTextElement('div', 'comment-text', comment.comment),
+        ]),
+        CreateParentElement('div', 'comment-footer', [
+            CreateParentElement('div', 'likes', [
+                CreateTextElement('div', 'likes-counter', comment.likeCount),
+                btn,
+            ]),
+        ]),
+        answer,
+    ])
+    newPost.children[1].children[0].addEventListener('click', () => {
+        CommentClick(comment)
+    })
+    return newPost
 }
 
 //Рендеринг с помощью DOM
 function RenderingDOM() {
-    let postList = document.getElementById("posts");
-    postList.innerHTML = "";
-    createCommentsDOM(comments, postList);
-};
+    elPostList.innerHTML = ''
+    createCommentsDOM(comments, elPostList)
+}
 
-export { RenderingDOM };
+export { RenderingDOM }

@@ -1,59 +1,59 @@
-import { comments, clearText } from './data.js'
+import { comments, saveComment } from './data.js'
 import { RenderingHTML } from './RenderHTML.js'
+import { validation } from './main.js'
+import {
+    elUserName,
+    elUserComment,
+    elAddComment,
+    elCommentEdit,
+    //elPostButton,
+    //elLoadData,
+} from './elements.js'
 
-let selectedComment = -1
+//let selectedComment = -1
 
-let editComment
+//let editComment
 
 function CommentClickHTML(id) {
-    let un = document.getElementById('username')
-    let uc = document.getElementById('usercomment')
     const comment = comments[id]
-    un.value = comment.userName
-    un.ariaReadOnly = true
-    uc.value = comment.comment + ' > '
-    editComment = comment
-    selectedComment = id
+    elUserName.value = comment.userName
+    elUserComment.ariaReadOnly = true
+    elUserComment.value = comment.comment + ' > '
+    //editComment = comment
+    //selectedComment = id
 }
 
 function ClickLikeHTML(id) {
     const comment = comments[id]
-    if (comment.like) {
-        comment.like = false
-        comment.likeCount--
+    if (comment.isLiked) {
+        comment.isLiked = false
+        comment.likes--
     } else {
-        comment.like = true
-        comment.likeCount++
+        comment.isLiked = true
+        comment.likes++
     }
     RenderingHTML()
 }
 
+//Обработчик события нажатия на кнопку публикации комментария
 function postmessageHTML() {
-    let un = document.getElementById('username')
-    let uc = document.getElementById('usercomment')
-    let date = new Date()
-    let dateStr = `${date.getMonth() + 1}.${date.getMonth() + 1}.${date.getFullYear()} ${date.getHours()}: ${date.getMinutes()}`
-    let newCom = {
-        userName: clearText(un.value),
-        postDate: dateStr,
-        comment: clearText(uc.value),
-        likeCount: 0,
-        like: false,
-        level: 0,
-    }
-
-    if (selectedComment >= 0) {
-        const comment = comments[selectedComment]
-        newCom.level = comment.level + 1
-        comments.splice(selectedComment + 1, 0, newCom)
-    } else {
-        comments.push(newCom)
-    }
-    selectedComment = -1
-    RenderingHTML()
-    un.value = ''
-    uc.value = ''
-    validation()
+    elAddComment.style.display = 'block'
+    elCommentEdit.style.display = 'none'
+    saveComment(elUserName.value, elUserComment.value)
+        .then(() => {
+            RenderingHTML()
+            elUserName.value = ''
+            elUserComment.value = ''
+            validation()
+        })
+        .catch((error) => {
+            let f = error
+            alert(`Ошибка сохранения данных ${error}`)
+        })
+        .finally(() => {
+            elAddComment.style.display = 'none'
+            elCommentEdit.style.display = 'block'
+        })
 }
 
 //Добавить обработчик события кнопки like
@@ -70,32 +70,6 @@ function initAnswerClick() {
     btns.forEach((btn, index) => {
         btn.addEventListener('click', () => CommentClickHTML(index))
     })
-}
-
-function postmessage2() {
-    let un = document.getElementById('username')
-    let uc = document.getElementById('usercomment')
-    let date = new Date()
-    let dateStr = `${date.getMonth() + 1}.${date.getMonth() + 1}.${date.getFullYear()} ${date.getHours()}: ${date.getMinutes()}`
-    let newCom = {
-        userName: un.value,
-        postDate: dateStr,
-        comment: uc.value,
-        likeCount: 0,
-        like: false,
-    }
-    if (editComment == null) {
-        comments.push(newCom)
-    } else {
-        if (editComment.answers == null) editComment.answers = []
-        editComment.answers.push(newCom)
-    }
-
-    editComment = null
-    RenderingHTML()
-    un.value = ''
-    uc.value = ''
-    validation()
 }
 
 export { initLikeClick, initAnswerClick, postmessageHTML }

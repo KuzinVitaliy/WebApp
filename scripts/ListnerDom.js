@@ -1,22 +1,29 @@
-function CommentClick(comment) {
-    let un = document.getElementById("username");
-    let uc = document.getElementById("usercomment");
+import {
+    elUserName,
+    elUserComment,
+    //elPostButton,
+    //elLoadData,
+    //elAddComment,
+} from './elements.js'
 
-    un.value = comment.userName;
-    un.ariaReadOnly = true;
-    uc.value = comment.comment + " > ";
-    editComment = comment;
+import {RenderingDOM} from './RenderDOM.js'
+
+function CommentClick(comment) {
+    elUserName.value = comment.userName
+    elUserName.ariaReadOnly = true
+    elUserComment.value = comment.comment + ' > '
+   // editComment = comment
 }
 
 function ClickLikeDOM(comment) {
-    let r = 0;
-    if (comment.like) {
-        comment.like = false;
-        comment.likeCount--;
+       if (comment.like) {
+        comment.like = false
+        comment.likeCount--
     } else {
-        comment.like = true;
-        comment.likeCount++;
+        comment.like = true
+        comment.likeCount++
     }
-    RenderingDOM();
+    RenderingDOM()
 }
 
+export { CommentClick, ClickLikeDOM }

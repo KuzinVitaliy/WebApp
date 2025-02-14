@@ -4,9 +4,10 @@ import { validation } from './main.js'
 import {
     elUserName,
     elUserComment,
+    elAddComment,
+    elCommentEdit,
     //elPostButton,
     //elLoadData,
-    //elAddComment,
 } from './elements.js'
 
 //let selectedComment = -1
@@ -34,13 +35,25 @@ function ClickLikeHTML(id) {
     RenderingHTML()
 }
 
+//Обработчик события нажатия на кнопку публикации комментария
 function postmessageHTML() {
-    saveComment(elUserName.value, elUserComment.value).then(() => {
-        RenderingHTML()
-        elUserName.value = ''
-        elUserComment.value = ''
-        validation()
-    })
+    elAddComment.style.display = 'block'
+    elCommentEdit.style.display = 'none'
+    saveComment(elUserName.value, elUserComment.value)
+        .then(() => {
+            RenderingHTML()
+            elUserName.value = ''
+            elUserComment.value = ''
+            validation()
+        })
+        .catch((error) => {
+            let f = error
+            alert(`Ошибка сохранения данных ${error}`)
+        })
+        .finally(() => {
+            elAddComment.style.display = 'none'
+            elCommentEdit.style.display = 'block'
+        })
 }
 
 //Добавить обработчик события кнопки like

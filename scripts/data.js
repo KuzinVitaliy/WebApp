@@ -13,28 +13,31 @@ function readData(response) {
     })
 }
 
-function showError(response) {
-    const jsonError = response.json()
-
-    // Подписываемся на результат преобразования
-    jsonError.then((error) => {
-        alert(`Ошибка сохранения данных ${error.error}`)
+function procErrorResponse(response) {
+    return response.json((jsonError) => {
+        // Подписываемся на результат преобразования
+        return jsonError.then((error) => {
+            const msg = error.error
+            console.log(msg)
+            throw new Error(msg)
+        })
     })
 }
 
+//Сохраняет новый комментарий
 function saveComment(userName, comment) {
     let newCom = { name: userName, text: comment }
     return fetch(rootUrl, { method: 'POST', body: JSON.stringify(newCom) })
         .then((response) => {
             if (response.ok) {
-                addCommentData()
-            } else {
-                console.log(`Ошибка сохранения данных: ${response.status}`)
-                showError(response)
+                return addCommentData()
             }
+            return response.json().then((data) => {
+                throw new Error(data.error)
+            })
         })
-        .catch((error) => {
-            console.log(error.message)
+        .then((eeee) => {
+            console.log(eeee)
         })
 }
 
@@ -64,20 +67,16 @@ function loadData() {
 
 function addCommentData() {
     const url = rootUrl
-    elAddComment.style.display = 'block'
-    elCommentEdit.style.display = 'none'
-    fetch(url)
+
+    return fetch(url)
         .then((response) => {
             return readData(response)
         })
         .then(() => {
             console.log('Загрузка завершена')
-            elAddComment.style.display = 'none'
+            //     elAddComment.style.display = 'none'
         })
-        .finally(() => {
-            elAddComment.style.display = 'none'
-            elCommentEdit.style.display = 'block'
-        })
+        .finally(() => {})
 }
 
 export { comments, clearText, loadData, rootUrl, saveComment }

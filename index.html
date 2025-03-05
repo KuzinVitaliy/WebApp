@@ -1,29 +1,47 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
-<head>
+  <head>
     <title>Проект "Комменты"</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="styles.css" />
-</head>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
 
-<script type="module" src="./scripts/data.js"></script>
-<script type="module" src="./scripts/main.js"></script>
+  <script type="module" src="./scripts/main.js"></script>
 
-<body>
+  <body>
     <div class="container">
-        <ul class="comments" id="posts">  
 
-        </ul>
-        <div class="add-form">
-            <input type="text" id="username" class="add-form-name" placeholder="Введите ваше имя" />
-            <textarea type="textarea" id="usercomment" class="add-form-text" placeholder="Введите ваш комментарий"
-                rows="4"></textarea>
-            <div class="add-form-row">
-                <button class="add-form-button" id="postbutton">Написать</button>
-            </div>
+      <div id="loadData" style="display: block">
+        <div>Идет загрузка данных</div>
+      </div>
+      <ul class="comments" id="posts"></ul>
+      <div id="addComment" style="display: none">
+        <div>Идет добавление комментария</div>
+      </div>
+      <div id="needLogin">
+        <div>Для добавления комментариев нужно</div>
+        <a href="./login.html"> авторизоваться </a>
+        <div>либо</div>
+        <a href="./registration.html">зарегистрироваться</a>
+      </div>
+      <div class="add-form" id="commentEdit">
+        <input
+          type="text"
+          id="userName"
+          class="add-form-name"
+          placeholder="Введите ваше имя"
+        />
+        <textarea
+          type="textarea"
+          id="userComment"
+          class="add-form-text"
+          placeholder="Введите ваш комментарий"
+          rows="4"
+        ></textarea>
+        <div class="add-form-row">
+          <button class="add-form-button" id="postButton">Написать</button>
         </div>
+      </div>
     </div>
-</body>
-
+  </body>
 </html>

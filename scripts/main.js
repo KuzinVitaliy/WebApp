@@ -1,33 +1,41 @@
-import { RenderingHTML } from "./RenderHTML.js"
-import { RenderingDOM } from "./RenderDOM.js"
-import { postmessageHTML } from "./ListenerHTML.js"
+//import { RenderingHTML } from './RenderHTML.js'
+//import { RenderingDOM } from './RenderDOM.js'
+import { postmessageHTML, validation } from './ListenerHTML.js'
+import { loadData } from './data.js'
+import {
+    elUserName,
+    elUserComment,
+    elPostButton,
+    elLoadData,
+} from './elements.js'
+import { RenderingHTML } from './RenderHTML.js'
 
-function validation() {
-    let un = document.getElementById("username");
-    let uc = document.getElementById("usercomment");
-    let bt = document.getElementById("postbutton");
-    if (un.value.length > 0 && uc.value.length > 0)
-        bt.disabled = false;
-    else
-        bt.disabled = true;
-}
 
+
+//Добавить обработчики
 function eventValidationLink() {
-    const elm = document.getElementById("username");
-    elm.addEventListener("change", () => validation());
+    elUserName?.addEventListener('change', () => validation())
+    elUserComment?.addEventListener('change', () => validation())
+    elPostButton?.addEventListener('click', () => postmessageHTML())
+}
 
-    const elm2 = document.getElementById("usercomment");
-    elm2.addEventListener("change", () => validation());
-
-    const elm3 = document.getElementById("postbutton");
-    elm3.addEventListener("click", () => postmessageHTML());
-
-
-
+function firstLoadData() {
+    if (elLoadData != null) elLoadData.style.display = 'block'
+    loadData()
+        .then(() => {
+            RenderingHTML()
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+        .finally(() => {
+            if (elLoadData != null) elLoadData.style.display = 'none'
+        })
 }
 
 
-export { validation };
-eventValidationLink();
-RenderingHTML();
+
+eventValidationLink()
+firstLoadData()
+//RenderingHTML()
 //RenderingDOM();

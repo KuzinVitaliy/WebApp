@@ -1,0 +1,42 @@
+.register_label {
+    color: rgb(189, 177, 177);
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.registration_panel {
+    display: flex;
+    flex-direction: column;
+    max-width: 200px;
+    justify-self: center;
+    background-color: aqua;
+}
+
+
+
+.input_text {
+    font-size: 16px;
+    font-family: Helvetica;
+    border-radius: 8px;
+    border: none;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#login_in_use {
+    font-size: 16px;
+    color: rgb(255, 68, 0);
+    display: none;
+}
+
+.registration_button {
+    font-size: 16px;
+    font-family: Helvetica;
+    border-radius: 8px;
+    border: none;
+    margin-top: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
+    height: 30px;
+    margin-bottom: 20px;
+}

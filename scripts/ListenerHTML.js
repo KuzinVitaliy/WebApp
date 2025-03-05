@@ -1,18 +1,15 @@
 import { comments, saveComment } from './data.js'
 import { RenderingHTML } from './RenderHTML.js'
-import { validation } from './main.js'
+
 import {
     elUserName,
     elUserComment,
     elAddComment,
     elCommentEdit,
+    elPostButton,
     //elPostButton,
     //elLoadData,
 } from './elements.js'
-
-//let selectedComment = -1
-
-//let editComment
 
 function CommentClickHTML(id) {
     const comment = comments[id]
@@ -35,6 +32,13 @@ function ClickLikeHTML(id) {
     RenderingHTML()
 }
 
+//Проверка корректности введенных данные
+function validation() {
+    if (elUserName.value.length > 0 && elUserComment.value.length > 0)
+        elPostButton.disabled = false
+    else elPostButton.disabled = true
+}
+
 //Обработчик события нажатия на кнопку публикации комментария
 function postmessageHTML() {
     elAddComment.style.display = 'block'
@@ -47,7 +51,7 @@ function postmessageHTML() {
             validation()
         })
         .catch((error) => {
-            let f = error
+            console.log ( error)
             alert(`Ошибка сохранения данных ${error}`)
         })
         .finally(() => {
@@ -72,4 +76,4 @@ function initAnswerClick() {
     })
 }
 
-export { initLikeClick, initAnswerClick, postmessageHTML }
+export { initLikeClick, initAnswerClick, postmessageHTML, validation }

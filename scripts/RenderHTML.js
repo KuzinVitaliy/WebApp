@@ -1,8 +1,9 @@
-import { comments } from './data.js'
+import { comments, сanAddComment, userInfo } from './data.js'
 import { initLikeClick } from './ListenerHTML.js'
 import { initAnswerClick } from './ListenerHTML.js'
-import {elPostList} from './elements.js'
+import { elPostList, elCommentEdit, elUserName } from './elements.js'
 
+//Создать HTML со всеми комментариями
 function CreateCommentsHTML(arrComments, rootElement) {
     if (arrComments == null) return
     // let commentsElementHTML = "";
@@ -39,11 +40,20 @@ function CreateCommentElementHTML(comment) {
     return res
 }
 
+///Построить HTML с комментариями
 function RenderingHTML() {
     elPostList.innerHTML = ''
     CreateCommentsHTML(comments, elPostList)
     initLikeClick()
     initAnswerClick()
+
+    if (сanAddComment()) {
+        elCommentEdit.style.display = 'block'
+        elUserName.value = userInfo().name
+        elUserName.readOnly = true
+    } else elCommentEdit.style.display = 'none'
+
+    window.localStorage.setItem('123', '332')
 }
 
 export { RenderingHTML }

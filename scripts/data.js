@@ -1,10 +1,80 @@
 //Корневой адрес службы
-var rootUrl = `https://wedev-api.sky.pro/api/v1/vk/comments`
+var rootUrl = `https://wedev-api.sky.pro/api/v2/vk/comments`
+var userUrl = `https://wedev-api.sky.pro/api/user`
+
+const userInfoStorage = 'commentUserInfo'
 
 import { RenderingHTML } from './RenderHTML.js'
-import { elLoadData, elAddComment, elCommentEdit } from './elements.js'
 
 let comments = []
+
+let currentUser
+
+//$region Работа с пользователями
+function getUsers() {
+    return fetch(`${rootUrl}\\`, { method: 'GET' }).then((response) => {
+        response.json.then((data) => {
+            return data.JSON
+        })
+    })
+}
+
+function registerUser(name, login, password) {
+    return fetch(userUrl, {
+        method: 'POST',
+        body: JSON.stringify({ name, login, password }),
+    })
+        .then((response) => {
+            //Получили
+            if (response.status == 400)
+                throw new Error(`Пользователь ${login} уже существует`)
+            response.json().then((data) => {
+                currentUser = data.JSON
+            })
+        })
+        .catch((error) => {
+            currentUser = null // Обнуляем данные о пользователе
+            console.log(error)
+            throw new Error(error)
+        })
+}
+
+function userLogin(login, password) {
+    //let js = JSON.stringify({ login, password })
+    window.localStorage.removeItem(userInfoStorage)
+    return fetch(`${userUrl}/login`, {
+        method: 'POST',
+        body: JSON.stringify({ login, password }),
+    })
+        .then((response) => {
+            return response.json().then((data) => {
+                console.log(data)
+                currentUser = data.user
+                if (response.status == 400)
+                    throw new Error(`Пользователь не существует`)
+                window.localStorage.setItem(
+                    userInfoStorage,
+                    JSON.stringify(data.user),
+                )
+            })
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+}
+
+//Можно добавлять комментарии
+function сanAddComment() {
+    return isNaN(userInfo())
+}
+
+function userInfo() {
+    let userInfo = window.localStorage.getItem(userInfoStorage)
+    let obj = JSON.parse(userInfo)
+    return obj
+}
+
+//$endregion
 
 function readData(response) {
     return response.json().then((responseData) => {
@@ -13,21 +83,17 @@ function readData(response) {
     })
 }
 
-function procErrorResponse(response) {
-    return response.json((jsonError) => {
-        // Подписываемся на результат преобразования
-        return jsonError.then((error) => {
-            const msg = error.error
-            console.log(msg)
-            throw new Error(msg)
-        })
-    })
-}
-
 //Сохраняет новый комментарий
 function saveComment(userName, comment) {
     let newCom = { name: userName, text: comment }
-    return fetch(rootUrl, { method: 'POST', body: JSON.stringify(newCom) })
+    let token = userInfo().token
+    return fetch(rootUrl, {
+        method: 'POST',
+        body: JSON.stringify(newCom),
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    })
         .then((response) => {
             if (response.ok) {
                 return addCommentData()
@@ -41,6 +107,12 @@ function saveComment(userName, comment) {
         })
 }
 
+function deleteComment(id) {
+    return fetch(`${rootUrl}\\${id}`, { method: 'DELETE' }).then(
+        (response) => {},
+    )
+}
+
 function clearText(text) {
     let elm = document.createElement('div')
     elm.innerHTML = text
@@ -49,8 +121,7 @@ function clearText(text) {
 
 function loadData() {
     const url = rootUrl
-    elLoadData.style.display = 'block'
-    fetch(url)
+    return fetch(url)
         .then((response) => {
             return readData(response)
         })
@@ -59,9 +130,6 @@ function loadData() {
         })
         .catch((error) => {
             console.log(error.message)
-        })
-        .finally(() => {
-            elLoadData.style.display = 'none'
         })
 }
 
@@ -79,4 +147,16 @@ function addCommentData() {
         .finally(() => {})
 }
 
-export { comments, clearText, loadData, rootUrl, saveComment }
+export {
+    comments,
+    clearText,
+    loadData,
+    rootUrl,
+    saveComment,
+    deleteComment,
+    getUsers,
+    registerUser,
+    userLogin,
+    сanAddComment,
+    userInfo,
+}

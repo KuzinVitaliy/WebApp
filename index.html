@@ -3,19 +3,26 @@
   <head>
     <title>Проект "Комменты"</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="css/styles.css" />
   </head>
 
   <script type="module" src="./scripts/main.js"></script>
 
   <body>
     <div class="container">
+
       <div id="loadData" style="display: block">
         <div>Идет загрузка данных</div>
       </div>
       <ul class="comments" id="posts"></ul>
       <div id="addComment" style="display: none">
         <div>Идет добавление комментария</div>
+      </div>
+      <div id="needLogin">
+        <div>Для добавления комментариев нужно</div>
+        <a href="./login.html"> авторизоваться </a>
+        <div>либо</div>
+        <a href="./registration.html">зарегистрироваться</a>
       </div>
       <div class="add-form" id="commentEdit">
         <input
